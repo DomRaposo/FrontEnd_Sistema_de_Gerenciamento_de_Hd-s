@@ -93,7 +93,7 @@ const HDForm = ({ hdData, onHDCreated, onUpdated, onCLose }) => {
             {error && <div className="p-3 mb-4 bg-red-100 text-red-700 rounded">Erro: {error}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                {/* ... (Os campos de input: nome_hd, serial_number, tamanho_total_gb, etc., permanecem iguais) ... */}
+                
                 
                 <div className="flex gap-4">
                     <button
