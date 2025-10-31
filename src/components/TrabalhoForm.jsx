@@ -1,9 +1,7 @@
-// frontend/src/components/TrabalhoForm.jsx
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Endpoints necessários
+
 const API_URL = 'http://127.0.0.1:8000/api/v1/trabalhos/';
 const CLIENTES_URL = 'http://127.0.0.1:8000/api/v1/clientes/';
 const HDS_URL = 'http://127.0.0.1:8000/api/v1/hds/';
@@ -12,15 +10,15 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
     
     const isEditing = !!trabalhoData;
     
-    // Estados para preencher os dropdowns
+    
     const [clientes, setClientes] = useState([]);
     const [hds, setHDs] = useState([]);
 
     const [formData, setFormData] = useState({
         titulo: '',
         descricao: '',
-        cliente: '', // ID do cliente
-        hd_usado: '', // ID do HD
+        cliente: '', 
+        hd_usado: '', 
         data_inicio: '',
         data_fim_prevista: '',
     });
@@ -29,11 +27,11 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // 💡 Efeito para carregar Clientes e HDs e, se for edição, preencher o formulário
+
     useEffect(() => {
         const fetchDependencies = async () => {
             try {
-                // Busca clientes e HDs (poderíamos otimizar com Promise.all)
+                
                 const clientesRes = await axios.get(CLIENTES_URL);
                 const hdsRes = await axios.get(HDS_URL);
                 
@@ -41,13 +39,13 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                 setHDs(hdsRes.data);
 
                 if (trabalhoData) {
-                    // Preenche o formulário para edição
+                    
+                    
                     setFormData({
                         titulo: trabalhoData.titulo || '',
                         descricao: trabalhoData.descricao || '',
-                        cliente: trabalhoData.cliente, // ID
-                        hd_usado: trabalhoData.hd_usado, // ID
-                        // Formatando as datas para o campo input (YYYY-MM-DD)
+                        cliente: trabalhoData.cliente, 
+                        hd_usado: trabalhoData.hd_usado,
                         data_inicio: trabalhoData.data_inicio ? trabalhoData.data_inicio.substring(0, 10) : '',
                         data_fim_prevista: trabalhoData.data_fim_prevista ? trabalhoData.data_fim_prevista.substring(0, 10) : '',
                     });
@@ -63,7 +61,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            // Converte IDs para número, pois o Django espera a PK inteira
+            
             [name]: (name === 'cliente' || name === 'hd_usado') ? parseInt(value) : value,
         }));
     };
@@ -75,7 +73,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
         setSuccess(false);
 
         try {
-            // Verifica se o cliente e HD foram selecionados (IDs não vazios)
+            
             if (!formData.cliente || !formData.hd_usado) {
                  throw new Error("Cliente e HD são obrigatórios.");
             }
@@ -84,7 +82,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                 await axios.put(`${API_URL}${trabalhoData.id}/`, formData);
             } else {
                 await axios.post(API_URL, formData);
-                // Reseta apenas os campos de texto, mantendo a seleção se necessário
+                
                 setFormData(prev => ({ ...prev, titulo: '', descricao: '' }));
             }
             
@@ -105,13 +103,13 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                 {isEditing ? `Editar Trabalho: ${trabalhoData.titulo}` : 'Cadastrar Novo Trabalho'}
             </h3>
             
-            {/* Mensagens de feedback */}
+            
             {success && <div className="p-3 mb-4 bg-green-100 text-green-700 rounded">Trabalho salvo com sucesso!</div>}
             {error && <div className="p-3 mb-4 bg-red-100 text-red-700 rounded">Erro: {error}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 
-                {/* Título e Descrição */}
+                
                 <div>
                     <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título do Projeto</label>
                     <input type="text" name="titulo" id="titulo" required
@@ -127,7 +125,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                     />
                 </div>
 
-                {/* Cliente (Dropdown) */}
+
                 <div>
                     <label htmlFor="cliente" className="block text-sm font-medium text-gray-700">Cliente</label>
                     <select name="cliente" id="cliente" required
@@ -141,7 +139,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                     </select>
                 </div>
 
-                {/* HD Usado (Dropdown) */}
+
                 <div>
                     <label htmlFor="hd_usado" className="block text-sm font-medium text-gray-700">HD Alocado</label>
                     <select name="hd_usado" id="hd_usado" required
@@ -150,13 +148,13 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                     >
                         <option value="">-- Selecione o HD --</option>
                         {hds.map(h => (
-                            // Incluímos o Serial Number para facilitar a identificação
+                            
                             <option key={h.id} value={h.id}>{h.nome_hd} (S/N: {h.serial_number}) - {h.status}</option>
                         ))}
                     </select>
                 </div>
 
-                {/* Datas */}
+
                 <div className="flex gap-4">
                     <div className="flex-1">
                         <label htmlFor="data_inicio" className="block text-sm font-medium text-gray-700">Início</label>
@@ -174,7 +172,7 @@ const TrabalhoForm = ({ trabalhoData, onTrabalhoSaved, onClose }) => {
                     </div>
                 </div>
 
-                {/* Botões de Ação */}
+
                 <div className="flex gap-4 pt-2">
                     <button
                         type="submit"

@@ -1,5 +1,5 @@
 
-import HDForm from './HDForm'; // 💡 
+import HDForm from './HDForm'; 
 
 const HDList = () => {
  
@@ -23,7 +23,7 @@ const HDList = () => {
             setLoading(true);
             try {
                 await axios.delete(`${API_URL}${id}/`);
-                fetchHDs(searchTerm); // Recarrega a lista
+                fetchHDs(searchTerm); 
             } catch (err) {
                 setError("Erro ao deletar o HD.");
             } finally {
@@ -61,7 +61,7 @@ const HDList = () => {
                 </button>
             </div>
 
-            {/* Formulário de Criação Condicional */}
+            
             {showForm && (
                 <div className="mb-8 border p-4 rounded-lg">
                     <HDForm onHDCreated={handleHDCreated} />
@@ -70,24 +70,24 @@ const HDList = () => {
             
             
             
-            {/* 💡 Grid de HDs - Adicionando botões de Ação */}
+            
             {!loading && !error && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {hds.map((hd) => (
                         <div key={hd.id} className="border p-4 rounded-lg shadow-sm">
-                            {/* ... (Exibição de dados) ... */}
+                            
                             <p className="text-xl font-bold text-indigo-700">{hd.nome_hd}</p>
-                            {/* ... (Outros campos) ... */}
+                            
 
                             <div className="mt-4 pt-3 border-t flex justify-end gap-3">
-                                {/* Botão de Editar */}
+                                
                                 <button
                                     onClick={() => setEditingHD(hd)}
                                     className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
                                 >
                                     Editar
                                 </button>
-                                {/* Botão de Deletar */}
+                                
                                 <button
                                     onClick={() => handleDelete(hd.id, hd.nome_hd)}
                                     className="text-sm text-red-600 hover:text-red-800 font-medium"

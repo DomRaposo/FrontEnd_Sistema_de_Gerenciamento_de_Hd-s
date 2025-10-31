@@ -85,7 +85,7 @@ const TrabalhoList = () => {
     return (
         <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
             
-            {/* Modal de Edição */}
+            
             {editingTrabalho && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-50">
                     <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
@@ -102,7 +102,7 @@ const TrabalhoList = () => {
             
             <div className="mb-6 flex justify-between items-center">
                 
-                {/* Busca */}
+                
                 <form onSubmit={handleSearchSubmit} className="flex gap-3 w-3/4">
                     <input
                         type="text"
@@ -119,7 +119,7 @@ const TrabalhoList = () => {
                     </button>
                 </form>
                 
-                {/* Botão Novo Trabalho */}
+                
                 <button
                     onClick={() => setShowForm(!showForm)}
                     className="bg-purple-600 text-white px-5 py-3 rounded-lg hover:bg-purple-700 transition duration-150"
@@ -128,7 +128,7 @@ const TrabalhoList = () => {
                 </button>
             </div>
 
-            {/* Formulário de Criação Condicional */}
+
             {showForm && (
                 <div className="mb-8 border p-4 rounded-lg bg-gray-50">
                     <TrabalhoForm onTrabalhoSaved={handleTrabalhoSaved} onClose={() => setShowForm(false)} />
@@ -137,7 +137,7 @@ const TrabalhoList = () => {
             
             {error && <div className="text-red-600 bg-red-100 p-4 rounded text-center mb-4">{error}</div>}
 
-            {/* 💡 Tabela de Trabalhos */}
+
             <div className="mt-6 overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -158,11 +158,11 @@ const TrabalhoList = () => {
                                         {trabalho.titulo}
                                         <p className="text-xs text-gray-500 truncate max-w-xs">{trabalho.descricao}</p>
                                     </td>
-                                    {/* Exibe o nome do HD (supondo que o Serializer do Django retorne o nome) */}
+                                    
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
                                         {trabalho.hd_usado_nome || trabalho.hd_usado}
                                     </td>
-                                    {/* Exibe o nome do Cliente (supondo que o Serializer do Django retorne o nome) */}
+                                    
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {trabalho.cliente_nome || trabalho.cliente}
                                     </td>

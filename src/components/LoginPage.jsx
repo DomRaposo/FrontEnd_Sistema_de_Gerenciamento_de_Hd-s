@@ -34,14 +34,14 @@ function LoginPage() {
                 
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     
-                    {/* Mensagem de Erro */}
+                    
                     {error && (
                         <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
                             {error}
                         </div>
                     )}
 
-                    {/* Campo Nome de Usuário */}
+                    
                     <div>
                         <label className="text-sm font-medium text-gray-700">
                             Nome de Usuário
@@ -56,7 +56,7 @@ function LoginPage() {
                         />
                     </div>
 
-                    {/* Campo Senha */}
+                    
                     <div>
                         <label className="text-sm font-medium text-gray-700">
                             Senha
