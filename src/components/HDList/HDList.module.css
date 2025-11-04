@@ -1,0 +1,132 @@
+
+
+.container {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb; /* Tailwind gray-200 */
+    padding-bottom: 0.5rem;
+}
+
+.button {
+    background-color: #16a34a; /* green-600 */
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.15s;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #15803d; /* green-700 */
+}
+
+.formContainer {
+    margin-bottom: 2rem;
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.loading {
+    text-align: center;
+    color: #4f46e5; /* indigo-600 */
+}
+
+.error {
+    text-align: center;
+    color: #dc2626; /* red-600 */
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card {
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.cardTitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #4f46e5; /* indigo-700 */
+}
+
+.cardActions {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.editButton {
+    font-size: 0.875rem;
+    color: #4f46e5;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.editButton:hover {
+    color: #3730a3;
+}
+
+.deleteButton {
+    font-size: 0.875rem;
+    color: #dc2626;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    color: #991b1b;
+}
+
+.modalBackdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(75, 85, 99, 0.75); /* gray-600 with opacity */
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    z-index: 50;
+}
+
+.modalContent {
+    position: relative;
+    top: 5rem;
+    margin: 0 auto;
+    padding: 1.25rem;
+    border: 1px solid #e5e7eb;
+    width: 90%;
+    max-width: 32rem;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    border-radius: 0.5rem;
+    background-color: white;
+}

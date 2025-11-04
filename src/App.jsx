@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import HDList from './components/HDList'; 
+import HDList from './components/HDList/HDList'; 
 import ClientList from './components/ClientList'; 
 import TrabalhoList from './components/TrabalhoList';
-import LoginPage from './components/LoginPage'; 
+import LoginPage from './components/LoginPage/LoginPage'; 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import UserForm from './components/UserForm'; 
 import './index.css'; 
@@ -47,10 +47,10 @@ function AppLayout() {
                     
                     <nav className="flex space-x-2 border-b border-indigo-700 mt-4">
                         <Link to="/hds" className={getTabClasses('/hds')}>
-                            Gerenciar HDs
+                            Gerenciar HDs | 
                         </Link>
                         <Link to="/clients" className={getTabClasses('/clients')}>
-                            Gerenciar Clientes
+                            Gerenciar Clientes | 
                         </Link>
                         <Link to="/trabalhos" className={getTabClasses('/trabalhos')}>
                             Gerenciar Projetos
