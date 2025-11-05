@@ -89,11 +89,14 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
     const submitButtonText = isEditing ? 'Salvar Alterações' : 'Cadastrar';
 
     return (
+
+    <main className='main'>
         <form onSubmit={handleSubmit} className={styles.form}>
+            
             <h3 className={styles.formTitle}>{title}</h3>
             
             <div className={styles.inputGroup}>
-                <label htmlFor="nome_hd" className={styles.label}>Nome do HD</label>
+                <label htmlFor="nome_hd" className={styles.label}>Nome do HD: </label>
                 <input
                     type="text"
                     id="nome_hd"
@@ -107,7 +110,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
             </div>
 
             <div className={styles.inputGroup}>
-                <label htmlFor="serial_number" className={styles.label}>Número de Série</label>
+                <label htmlFor="serial_number" className={styles.label}>Número de Série: </label>
                 <input
                     type="text"
                     id="serial_number"
@@ -121,7 +124,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
             </div>
 
             <div className={styles.inputGroup}>
-                <label htmlFor="tamanho_livre_gb" className={styles.label}>Tamanho Livre (GB)</label>
+                <label htmlFor="tamanho_livre_gb" className={styles.label}>Tamanho Livre (GB): </label>
                 <input
                     type="number"
                     id="tamanho_livre_gb"
@@ -135,7 +138,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
             </div>
 
             <div className={styles.inputGroup}>
-                <label htmlFor="localizacao" className={styles.label}>Localização</label>
+                <label htmlFor="localizacao" className={styles.label}>Localização:</label>
                 <input
                     type="text"
                     id="localizacao"
@@ -167,6 +170,8 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
                 </button>
             </div>
         </form>
+    </main>
+    
     );
 };
 

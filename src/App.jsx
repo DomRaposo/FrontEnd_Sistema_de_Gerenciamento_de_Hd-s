@@ -1,91 +1,95 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import clsx from 'clsx'; // Adicionar 'npm install clsx' se necessário
 import HDList from './components/HDList/HDList'; 
 import ClientList from './components/ClientList'; 
 import TrabalhoList from './components/TrabalhoList';
 import LoginPage from './components/LoginPage/LoginPage'; 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import UserForm from './components/UserForm'; 
-import './index.css'; 
+import styles from './App.module.css'; 
 
 
 function AppLayout() {
     
     const location = useLocation();
+    // Você deve garantir que 'user' contenha 'is_superuser' via JWT customizado!
     const { user, logoutUser } = useAuth();
+    const isAdmin = user && user.is_superuser;
     
- 
-    const getTabClasses = (path) => 
-        `px-4 py-2 font-medium text-sm rounded-t-lg transition-colors ${
-          location.pathname === path 
-            ? 'bg-white text-indigo-700 border-b-2 border-indigo-700' 
-            : 'text-white hover:bg-indigo-700'
-        }`;
+    // Função agora usa clsx e as classes importadas
+    const getTabClasses = (path) => {
+        const isActive = location.pathname === path;
+        
+        return clsx(
+            styles.navLink, // Classes base
+            {
+                [styles.navLinkActive]: isActive // Classes ativas
+            }
+        );
+    };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <header className="bg-indigo-600 shadow">
-                <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-3xl font-bold text-white">
+        <div className={styles.appContainer}>
+            <header className={styles.header}>
+                    
+                    <nav className={styles.nav}>
+                        <div className={styles.titlenav}>
+                        <h1 className={styles.title}>
                             Legado HD Manager
                         </h1>
                         
                         {user && (
-                            <div className="flex items-center space-x-4">
-                            
-                                <span className="text-white text-sm">Olá, {user.username}</span> 
-                                <button
-                                    onClick={logoutUser}
-                                    className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-150 text-sm"
-                                >
-                                    Sair
-                                </button>
+                            <div className={styles.userInfo}>
+                                <span className={styles.username}>
+                                    Olá, {user.username} {isAdmin && '(Admin)'}
+                                </span> 
+                                <button onClick={logoutUser} className={styles.logoutButton}> Sair </button>
                             </div>
                         )}
-                    </div>
-                    
-                    <nav className="flex space-x-2 border-b border-indigo-700 mt-4">
+                        </div>
+                        <div className={styles.navb}>
                         <Link to="/hds" className={getTabClasses('/hds')}>
-                            Gerenciar HDs | 
+                            Gerenciar HDs 
                         </Link>
                         <Link to="/clients" className={getTabClasses('/clients')}>
-                            Gerenciar Clientes | 
+                            Gerenciar Clientes 
                         </Link>
                         <Link to="/trabalhos" className={getTabClasses('/trabalhos')}>
                             Gerenciar Projetos
                         </Link>
                         
-                        
-                        <Link to="/admin-painel" className={getTabClasses('/admin-painel')}>
-                            Painel Admin
-                        </Link>
+                        {/* Exibir o link Painel Admin apenas se for Superusuário */}
+                        {isAdmin && (
+                            <Link to="/admin-painel" className={getTabClasses('/admin-painel')}>
+                                Painel Admin
+                            </Link>
+                        )}
+                        </div>
                     </nav>
 
-                </div>
+                
             </header>
             
             <main>
-                <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div className={styles.mainContent}>
                     
                     <Routes>
                         <Route path="/hds" element={<HDList />} />
                         <Route path="/clients" element={<ClientList />} />
                         <Route path="/trabalhos" element={<TrabalhoList />} />
                         
-                       
                         <Route path="/admin-painel" element={
-                            <div className="bg-white shadow overflow-hidden sm:rounded-lg p-6">
-                                <h2 className="text-2xl font-semibold mb-6 border-b pb-2 text-indigo-700">Funções de Administração</h2>
-                                
-                                
-                                <UserForm onUserCreated={() => {
-                                    
-                                    console.log("Usuário criado, atualizando lista...");
-                                }} /> 
-                            </div>
+                            // Proteção de rota interna
+                            isAdmin ? (
+                                <div className={styles.adminPanel}>
+                                    <h2 className={styles.adminTitle}>Funções de Administração</h2>
+                                    <UserForm onUserCreated={() => console.log("Usuário criado!")} /> 
+                                </div>
+                            ) : (
+                                <div className={styles.loadingText}>Acesso negado. Você não tem permissão de administrador.</div>
+                            )
                         } />
-                        
                         
                         <Route path="*" element={<HDList />} /> 
                     </Routes>
@@ -96,27 +100,23 @@ function AppLayout() {
 }
 
 
-
 function AuthGuard() {
     const { user, loading } = useAuth();
     const location = useLocation();
 
+    // Reutilizando a classe de texto de loading/erro
     if (loading) {
-        return <div className="text-center py-20 text-indigo-600">Carregando autenticação...</div>;
+        return <div className={styles.loadingText}>Carregando autenticação...</div>;
     }
 
-    
     if (location.pathname === '/login') {
-        
         if (user) return <AppLayout />;
         return <LoginPage />;
     }
 
-    
     if (!user) {
         return <LoginPage />;
     }
-    
     
     return <AppLayout />;
 }

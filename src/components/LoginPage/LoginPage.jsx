@@ -24,14 +24,14 @@ function LoginPage() {
         <div className={styles.container}>
             <div className={styles.card}>
                 
-
+            <h2 className={styles.title}>Acesso HD Manager</h2>
                 <form className={styles.form} onSubmit={handleSubmit}>
                     {error && (
                         <div className={styles.errorBox} role="alert">
                             {error}
                         </div>
                     )}
-                    <h2 className={styles.title}>Acesso ao Legado HD Manager</h2>
+                    
                         <label className={styles.label}>Nome de Usuário</label>
                     <div className={styles.inputGroup}>
                         
