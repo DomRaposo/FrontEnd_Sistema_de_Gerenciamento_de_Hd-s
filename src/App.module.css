@@ -14,24 +14,31 @@
 }
 
 .titlenav{
+
     display: flex;
-    width: 100%;
+    justify-content: space-between;
+    margin: 10px;
+    display: flex;
+    width: 95%;
     justify-content: space-between;
     
 }
 
 nav{
-    padding: 10px;
+    padding: 0px;
     width: 100%;
 }
 
 .navb{
+    width: 100%;
+    background-color: #3329a5;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
     top: 10px;
-    gap: 15px;
+    gap: 20px;
+    padding: 5px;
     
 }
 
