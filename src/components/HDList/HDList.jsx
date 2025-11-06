@@ -90,7 +90,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
 
     return (
 
-    <main className='main'>
+    <main className={styles.main}>
         <form onSubmit={handleSubmit} className={styles.form}>
             
             <h3 className={styles.formTitle}>{title}</h3>

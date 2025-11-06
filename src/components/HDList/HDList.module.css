@@ -1,17 +1,20 @@
 main{
-   
+
+    width: 100%;
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-
+    padding-top: 20px;
+    /* background-color: #5bda12; */
+   
 }
 
 .form {
     
   width: 350px; 
   margin: 0px;
-  padding: 40px;
+  padding: 20px;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -48,6 +51,7 @@ main{
 .input {
   padding: 10px 14px;
   border: 1px solid #ccc;
+  background-color: #ffffff;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
