@@ -1,7 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// 1. Importar o módulo de estilos
+import styles from './ClientForm.module.css';
 
+// 2. Definir a URL da API (Recomendado: Mover isso para um clientService.js!)
 const API_URL = 'http://127.0.0.1:8000/api/v1/clientes/';
 
 const ClientForm = ({ clientData, onClientCreated, onClientUpdated, onClose }) => {
@@ -32,6 +34,7 @@ const ClientForm = ({ clientData, onClientCreated, onClientUpdated, onClose }) =
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
+            [name]: value,
             [name]: value,
         }));
     };
@@ -64,48 +67,49 @@ const ClientForm = ({ clientData, onClientCreated, onClientUpdated, onClose }) =
     };
 
     return (
-        <div className="p-6">
-            <h3 className="text-xl font-semibold mb-4">
+        // 3. Substituir classes Tailwind por classes do Module
+        <div className={styles.container}>
+            <h3 className={styles.title}>
                 {isEditing ? `Editar Cliente: ${clientData.nome}` : 'Cadastrar Novo Cliente'}
             </h3>
             
-            {success && <div className="p-3 mb-4 bg-green-100 text-green-700 rounded">Cliente salvo com sucesso!</div>}
-            {error && <div className="p-3 mb-4 bg-red-100 text-red-700 rounded">Erro: {error}</div>}
+            {success && <div className={styles.successMessage}>Cliente salvo com sucesso!</div>}
+            {error && <div className={styles.errorMessage}>Erro: {error}</div>}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className={styles.form}>
                 
                 <div>
-                    <label htmlFor="nome" className="block text-sm font-medium text-gray-700">Nome</label>
+                    <label htmlFor="nome" className={styles.label}>Nome</label>
                     <input type="text" name="nome" id="nome" required
                         value={formData.nome} onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        className={styles.inputField}
                     />
                 </div>
 
                 
                 <div>
-                    <label htmlFor="contato" className="block text-sm font-medium text-gray-700">Contato</label>
+                    <label htmlFor="contato" className={styles.label}>Contato</label>
                     <input type="text" name="contato" id="contato"
                         value={formData.contato} onChange={handleChange}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        className={styles.inputField}
                     />
                 </div>
                 
                 
                 <div>
-                    <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">Observações</label>
+                    <label htmlFor="observacoes" className={styles.label}>Observações</label>
                     <textarea name="observacoes" id="observacoes"
                         value={formData.observacoes} onChange={handleChange}
                         rows="3"
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                        className={styles.inputField}
                     />
                 </div>
 
-                <div className="flex gap-4">
+                <div className={styles.buttonGroup}>
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`py-2 px-4 rounded-md text-sm font-medium text-white flex-grow ${loading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}`}
+                        className={styles.submitButton}
                     >
                         {loading ? 'Salvando...' : 'Salvar Cliente'}
                     </button>
@@ -114,7 +118,7 @@ const ClientForm = ({ clientData, onClientCreated, onClientUpdated, onClose }) =
                         <button
                             type="button"
                             onClick={onClose}
-                            className="py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                            className={styles.closeButton}
                         >
                             Fechar
                         </button>

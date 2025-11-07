@@ -18,6 +18,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose }) => {
         tamanho_total_gb: 0.00,
         localizacao: '',
         status: 'LIVRE', 
+        tamanho_livre_gb: 0.00,
     });
     const [formErrors, setFormErrors] = useState({});
     const [success, setSuccess] = useState(false);
@@ -34,6 +35,7 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose }) => {
                 tamanho_total_gb: parseFloat(hdData.tamanho_total_gb) || 0.00,
                 localizacao: hdData.localizacao || '',
                 status: hdData.status || 'LIVRE',
+                tamanho_livre_gb: parseFloat(hdData.tamanho_livre_gb) || 0.00,
             });
         }
         setFormErrors({});
@@ -52,36 +54,53 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose }) => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        setSuccess(false);
-        setFormErrors({});
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+    setFormErrors({});
 
-        const payload = formData;
-
-        try {
-            if (isEditing) {
-                await axios.put(`${API_URL}${hdData.id}/`, payload);
-                setSuccess(true);
-                if (onHDUpdated) onHDUpdated(); 
-            } else {
-                await axios.post(API_URL, payload);
-                setSuccess(true);
-                setFormData({ nome_hd: '', serial_number: '', tamanho_total_gb: 0.00, localizacao: '', status: 'LIVRE' });
-                if (onHDCreated) onHDCreated(); 
-            }
-        } catch (err) {
-            if (err.response && err.response.status === 400) {
-                setFormErrors(err.response.data);
-                setError("Erro de validação. Verifique os campos.");
-            } else {
-                setError("Erro ao salvar. Tente novamente ou verifique o console.");
-            }
-        } finally {
-            setLoading(false);
-        }
+    
+    const payload = {
+        ...formData,
+        
+        tamanho_total_gb: parseFloat(formData.tamanho_total_gb) || 0.00, 
+        
+        tamanho_livre_gb: isEditing 
+            ? formData.tamanho_livre_gb 
+            : (parseFloat(formData.tamanho_total_gb) || 0.00), 
     };
+
+    try {
+        if (isEditing) {
+            await axios.put(`${API_URL}${hdData.id}/`, payload);
+            setSuccess(true);
+            if (onHDUpdated) onHDUpdated(); 
+        } else {
+            await axios.post(API_URL, payload);
+            setSuccess(true);
+            
+            setFormData({ 
+                nome_hd: '', 
+                serial_number: '', 
+                tamanho_total_gb: 0.00, 
+                localizacao: '', 
+                status: 'LIVRE' 
+            }); 
+            if (onHDCreated) onHDCreated(); 
+        }
+    } catch (err) {
+        if (err.response && err.response.status === 400) {
+            setFormErrors(err.response.data);
+            setError("Erro de validação. Verifique os campos.");
+            console.error("Erro detalhado do DRF:", err.response.data); 
+        } else {
+            setError("Erro ao salvar. Tente novamente ou verifique o console.");
+        }
+    } finally {
+        setLoading(false);
+    }
+};
 
     const getFieldError = (fieldName) => {
         const error = formErrors[fieldName];

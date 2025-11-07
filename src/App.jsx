@@ -8,6 +8,9 @@ import LoginPage from './components/LoginPage/LoginPage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import UserForm from './components/UserForm'; 
 import styles from './App.module.css'; 
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 
 function AppLayout() {

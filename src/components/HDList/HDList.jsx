@@ -6,11 +6,17 @@ const API_URL = 'http://127.0.0.1:8000/api/v1/hds/';
 const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
     
     const [formData, setFormData] = useState({
-        nome_hd: '',
-        serial_number: '',
-        tamanho_livre_gb: '',
-        localizacao: '',
-    });
+    nome_hd: '',
+    serial_number: '',
+    
+    tamanho_total_gb: 0.00, 
+    
+    tamanho_livre_gb: 0.00, 
+    
+    localizacao: '',
+    
+    status: 'LIVRE', 
+});
     
     const [loading, setLoading] = useState(false);
     const [formErrors, setFormErrors] = useState({});
@@ -49,41 +55,56 @@ const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setFormErrors({});
+    e.preventDefault();
+    setLoading(true);
+    setFormErrors({});
+    
+    // Função auxiliar para garantir que valores vazios ('') ou inválidos se tornem 0.00
+    const parseDecimal = (value) => parseFloat(value) || 0.00;
+
+    const payload = {
+        ...formData,
+        // 1. Garante que tamanho_total_gb seja um número válido
+        tamanho_total_gb: parseDecimal(formData.tamanho_total_gb), 
         
-        const payload = {
-            ...formData,
-            tamanho_livre_gb: Number(formData.tamanho_livre_gb), 
-        };
-
-        try {
-            if (isEditing) {
-                await axios.put(`${API_URL}${hdData.id}/`, payload);
-                onHDUpdated();
-            } else {
-                await axios.post(API_URL, payload);
-                onHDCreated();
-            }
-        } catch (err) {
-            if (err.response && err.response.status === 400) {
-                setFormErrors(err.response.data);
-            } else {
-                console.error("Erro na requisição:", err);
-            }
-        } finally {
-            setLoading(false);
-        }
+        // 2. Corrigido: Define tamanho_livre_gb
+        // Se estiver editando, usa o valor atual.
+        // Se estiver CADASTRANDO, define como igual ao tamanho_total_gb (assumindo HD vazio).
+        tamanho_livre_gb: isEditing 
+            ? parseDecimal(formData.tamanho_livre_gb)
+            : parseDecimal(formData.tamanho_total_gb), 
+        
+        // 3. Garante que o número de série e localização não sejam null ou undefined.
+        serial_number: formData.serial_number || '',
+        localizacao: formData.localizacao || '',
     };
 
-    const getFieldError = (fieldName) => {
-        const error = formErrors[fieldName];
-        if (Array.isArray(error)) {
-            return error[0];
+    try {
+        if (isEditing) {
+            // Requisição PUT
+            await axios.put(`${API_URL}${hdData.id}/`, payload);
+            if (onHDUpdated) onHDUpdated();
+        } else {
+            // Requisição POST
+            await axios.post(API_URL, payload);
+            if (onHDCreated) onHDCreated();
+            
+            // 💡 Limpa o formulário após o sucesso na criação
+            setFormData({ nome_hd: '', serial_number: '', tamanho_total_gb: 0.00, localizacao: '', status: 'LIVRE', tamanho_livre_gb: 0.00 });
         }
-        return error;
-    };
+    } catch (err) {
+        if (err.response && err.response.status === 400) {
+            // Captura os erros de validação do DRF
+            setFormErrors(err.response.data); 
+            console.error("DRF Validation Errors:", err.response.data);
+            
+        } else {
+            console.error("Erro na requisição:", err);
+        }
+    } finally {
+        setLoading(false);
+    }
+};
     
     const title = isEditing ? `Editar HD: ${formData.nome_hd || hdData.nome_hd}` : 'Cadastrar Novo HD';
     const submitButtonText = isEditing ? 'Salvar Alterações' : 'Cadastrar';

@@ -50,8 +50,9 @@ main{
 
 .input {
   padding: 10px 14px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   background-color: #ffffff;
+  color: #555;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -88,7 +89,7 @@ main{
 }
 
 .submitButton {
-  background-color: #3498db;
+  background-color: #4E9F3D;
   color: white;
 }
 

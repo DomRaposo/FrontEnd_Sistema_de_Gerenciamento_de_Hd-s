@@ -58,7 +58,7 @@ const ClientList = () => {
 
     return (
         <div className={styles.container}>
-            <h2 className={styles.title}>Gerenciamento de Clientes ({clients.length})</h2>
+            <h2 className={styles.title}>Gerenciamento de Clientes</h2>
 
             
             {editingClient && (
