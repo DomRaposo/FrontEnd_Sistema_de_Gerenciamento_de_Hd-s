@@ -1,189 +1,236 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from "./HDForm.module.css";
-
+import styles from "./HDList.module.css";
 const API_URL = 'http://127.0.0.1:8000/api/v1/hds/';
 
-const STATUS_OPTIONS = [
-    { value: 'LIVRE', label: 'Livre (Aguardando Projeto)' },
-    { value: 'EM_USO', label: 'Em Uso (Projeto Ativo)' },
-    { value: 'ARQUIVADO', label: 'Arquivado (Dados Completos)' },
-    { value: 'MANUTENCAO', label: 'Manutenção/Defeito' },
-];
-
-const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose }) => {
+const HDForm = ({ hdData, onHDCreated, onHDUpdated, onClose = () => {} }) => {
+    
+  
     const [formData, setFormData] = useState({
         nome_hd: '',
         serial_number: '',
-        tamanho_total_gb: 0.00,
+        tamanho_total_gb: 0.00, 
+        tamanho_livre_gb: 0.00, 
         localizacao: '',
         status: 'LIVRE', 
-        tamanho_livre_gb: 0.00,
     });
-    const [formErrors, setFormErrors] = useState({});
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(null);
+    
     const [loading, setLoading] = useState(false);
-
+    const [formErrors, setFormErrors] = useState({});
+    
     const isEditing = !!hdData;
 
+   
     useEffect(() => {
-        if (hdData) {
+        if (isEditing) {
             setFormData({
                 nome_hd: hdData.nome_hd || '',
                 serial_number: hdData.serial_number || '',
-                tamanho_total_gb: parseFloat(hdData.tamanho_total_gb) || 0.00,
+                
+                
+                tamanho_total_gb: String(hdData.tamanho_total_gb || 0), 
+                
+                tamanho_livre_gb: String(hdData.tamanho_livre_gb || 0), 
                 localizacao: hdData.localizacao || '',
-                status: hdData.status || 'LIVRE',
-                tamanho_livre_gb: parseFloat(hdData.tamanho_livre_gb) || 0.00,
+
+               
+                status: hdData.status || 'LIVRE', 
+            });
+        } else {
+           
+            setFormData({
+                nome_hd: '',
+                serial_number: '',
+                tamanho_total_gb: 0.00, 
+                tamanho_livre_gb: 0.00, 
+                localizacao: '',
+                status: 'LIVRE',
             });
         }
         setFormErrors({});
-        setSuccess(false);
-        setError(null);
-    }, [hdData]);
+    }, [hdData, isEditing]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: (name === 'tamanho_total_gb') 
-                ? (value === '' ? 0.00 : parseFloat(value)) 
-                : value,
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+        setFormErrors(prevErrors => ({
+            ...prevErrors,
+            [name]: undefined
         }));
     };
 
     const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    setSuccess(false);
     setFormErrors({});
-
     
+    const parseDecimal = (value) => parseFloat(value) || 0.00;
+
     const payload = {
         ...formData,
-        
-        tamanho_total_gb: parseFloat(formData.tamanho_total_gb) || 0.00, 
+        tamanho_total_gb: parseDecimal(formData.tamanho_total_gb), 
         
         tamanho_livre_gb: isEditing 
-            ? formData.tamanho_livre_gb 
-            : (parseFloat(formData.tamanho_total_gb) || 0.00), 
+            ? parseDecimal(formData.tamanho_livre_gb)
+            : parseDecimal(formData.tamanho_total_gb), 
+        
+        serial_number: formData.serial_number || '',
+        localizacao: formData.localizacao || '',
     };
 
     try {
         if (isEditing) {
             await axios.put(`${API_URL}${hdData.id}/`, payload);
-            setSuccess(true);
-            if (onHDUpdated) onHDUpdated(); 
+            if (onHDUpdated) onHDUpdated();
         } else {
             await axios.post(API_URL, payload);
-            setSuccess(true);
+            if (onHDCreated) onHDCreated();
             
-            setFormData({ 
-                nome_hd: '', 
-                serial_number: '', 
-                tamanho_total_gb: 0.00, 
-                localizacao: '', 
-                status: 'LIVRE' 
-            }); 
-            if (onHDCreated) onHDCreated(); 
+            setFormData({ nome_hd: '', serial_number: '', tamanho_total_gb: 0.00, localizacao: '', status: 'LIVRE', tamanho_livre_gb: 0.00 });
         }
     } catch (err) {
         if (err.response && err.response.status === 400) {
-            setFormErrors(err.response.data);
-            setError("Erro de validação. Verifique os campos.");
-            console.error("Erro detalhado do DRF:", err.response.data); 
+            setFormErrors(err.response.data); 
+            console.error("DRF Validation Errors:", err.response.data);
+            
         } else {
-            setError("Erro ao salvar. Tente novamente ou verifique o console.");
+            console.error("Erro na requisição:", err);
         }
     } finally {
         setLoading(false);
     }
 };
-
+    
     const getFieldError = (fieldName) => {
         const error = formErrors[fieldName];
         if (Array.isArray(error)) return error[0];
         return error;
     };
+    
+    const title = isEditing ? `Editar HD: ${formData.nome_hd || hdData.nome_hd}` : 'Cadastrar Novo HD';
+    const submitButtonText = isEditing ? 'Salvar Alterações' : 'Cadastrar';
 
     return (
-        <div className={styles.container}>
-            <h2 className={styles.title}>
-                {isEditing ? `Editar HD: ${formData.nome_hd}` : 'Cadastrar Novo HD'}
-            </h2>
 
-            {success && <div className={styles.alertSuccess}>HD salvo com sucesso!</div>}
-            {error && <div className={styles.alertError}>Erro: {error}</div>}
+    <main className={styles.main}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+            
+            <h3 className={styles.formTitle}>{title}</h3>
+            
+            <div className={styles.inputGroup}>
+                <label htmlFor="nome_hd" className={styles.label}>Nome do HD: </label>
+                <input
+                    type="text"
+                    id="nome_hd"
+                    name="nome_hd"
+                    value={formData.nome_hd}
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading}
+                />
+                {getFieldError('nome_hd') && <p className={styles.errorText}>{getFieldError('nome_hd')}</p>}
+            </div>
 
-            <form onSubmit={handleSubmit}>
-                {[
-                    { label: 'Nome do HD', name: 'nome_hd', type: 'text' },
-                    { label: 'Número de Série', name: 'serial_number', type: 'text' },
-                    { label: 'Tamanho Total (GB)', name: 'tamanho_total_gb', type: 'number', step: '0.01' },
-                    { label: 'Localização', name: 'localizacao', type: 'text' },
-                ].map(field => (
-                    <div className={styles.formGroup} key={field.name}>
-                        <label className={styles.label} htmlFor={field.name}>{field.label}</label>
-                        <input
-                            className={styles.inputField}
-                            id={field.name}
-                            name={field.name}
-                            type={field.type}
-                            step={field.step}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                        />
-                        {getFieldError(field.name) && (
-                            <p className={styles.errorText}>{getFieldError(field.name)}</p>
-                        )}
-                    </div>
-                ))}
+            <div className={styles.inputGroup}>
+                <label htmlFor="serial_number" className={styles.label}>Número de Série: </label>
+                <input
+                    type="text"
+                    id="serial_number"
+                    name="serial_number"
+                    value={formData.serial_number}
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading}
+                />
+                {getFieldError('serial_number') && <p className={styles.errorText}>{getFieldError('serial_number')}</p>}
+            </div>
+            
+            <div className={styles.inputGroup}>
+                <label htmlFor="tamanho_total_gb" className={styles.label}>Tamanho Total (GB): </label>
+                <input
+                    type="number"
+                    id="tamanho_total_gb"
+                    name="tamanho_total_gb"
+                    value={formData.tamanho_total_gb} 
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading}
+                />
+                {getFieldError('tamanho_total_gb') && <p className={styles.errorText}>{getFieldError('tamanho_total_gb')}</p>}
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label className={styles.label} htmlFor="status">Status</label>
-                    <select
-                        id="status"
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        className={styles.inputField}
-                    >
-                        {STATUS_OPTIONS.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                    {getFieldError('status') && (
-                        <p className={styles.errorText}>{getFieldError('status')}</p>
-                    )}
-                </div>
 
-                <div className={styles.buttonGroup}>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={styles.buttonNew}
-                    >
-                        {loading ? 'Salvando...' : isEditing ? 'Salvar Alterações' : 'Cadastrar HD'}
-                    </button>
+            <div className={styles.inputGroup}>
+                <label htmlFor="tamanho_livre_gb" className={styles.label}>Tamanho Livre (GB): </label>
+                <input
+                    type="number"
+                    id="tamanho_livre_gb"
+                    name="tamanho_livre_gb"
+                    value={formData.tamanho_livre_gb}
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading || !isEditing} 
+                />
+                {getFieldError('tamanho_livre_gb') && <p className={styles.errorText}>{getFieldError('tamanho_livre_gb')}</p>}
+            </div>
 
-                    {onClose && (
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className={styles.buttonCancel}
-                        >
-                            Cancelar
-                        </button>
-                    )}
-                </div>
-            </form>
-        </div>
+            <div className={styles.inputGroup}>
+                <label htmlFor="localizacao" className={styles.label}>Localização:</label>
+                <input
+                    type="text"
+                    id="localizacao"
+                    name="localizacao"
+                    value={formData.localizacao}
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading}
+                />
+                {getFieldError('localizacao') && <p className={styles.errorText}>{getFieldError('localizacao')}</p>}
+            </div>
+            
+            <div className={styles.inputGroup}>
+                <label htmlFor="status" className={styles.label}>Status: </label>
+                <select
+                    id="status"
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className={styles.input}
+                    disabled={loading}
+                >
+                    <option value="LIVRE">Livre (Aguardando Projeto)</option>
+                    <option value="EM_USO">Em Uso (Projeto Ativo)</option>
+                    <option value="ARQUIVADO">Arquivado (Dados Completos)</option>
+                    <option value="MANUTENCAO">Manutenção/Defeito</option>
+                </select>
+                {getFieldError('status') && <p className={styles.errorText}>{getFieldError('status')}</p>}
+            </div>
+
+            <div className={styles.actions}>
+                <button
+                    type="submit"
+                    className={styles.submitButton}
+                    disabled={loading}
+                >
+                    {loading ? 'Processando...' : submitButtonText}
+                </button>
+                
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className={styles.cancelButton}
+                    disabled={loading}
+                >
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </main>
+    
     );
 };
 
 export default HDForm;
-    
