@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// 1. Importar o módulo de estilos
+
 import styles from './ClientForm.module.css';
 
-// 2. Definir a URL da API (Recomendado: Mover isso para um clientService.js!)
 const API_URL = 'http://127.0.0.1:8000/api/v1/clientes/';
 
 const ClientForm = ({ clientData, onClientCreated, onClientUpdated, onClose }) => {

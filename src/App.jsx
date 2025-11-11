@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import clsx from 'clsx'; // Adicionar 'npm install clsx' se necessário
 import HDList from './components/HDList/HDList'; 
 import ClientList from "./components/ClientList/ClientList"; 
-import TrabalhoList from './components/TrabalhoList';
+import TrabalhoList from './components/TrabalhoList/TrabalhoList';
 import LoginPage from './components/LoginPage/LoginPage'; 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import UserForm from './components/UserForm'; 

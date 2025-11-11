@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import TrabalhoForm from './TrabalhoForm';
+import TrabalhoForm from '../TrabalhoForm/TrabalhoForm';
 
 const API_URL = 'http://127.0.0.1:8000/api/v1/trabalhos/';
 

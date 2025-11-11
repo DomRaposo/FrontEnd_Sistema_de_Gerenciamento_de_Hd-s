@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import ClientForm from "../ClientForm.jsx";
-import styles from './ClientList.module.css';
+import styles from './ClientList.module.css'; 
+import ClientForm from '../ClientForm/ClientForm';
 import { getClients, deleteClient } from "../services/clientService.js";
 
+// ... Resto do seu componente ClientList.jsx ...
 const ClientList = () => {
     const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
