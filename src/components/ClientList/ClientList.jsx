@@ -58,74 +58,78 @@ const ClientList = () => {
     if (error) return <div className={styles.errorBox}>{error}</div>;
 
     return (
-        <div className={styles.container}>
-            <h2 className={styles.title}>Gerenciamento de Clientes</h2>
+        <div className={styles.main}>
+            <div className={styles.container}>
+                <div></div>
+                <h2 className={styles.title}>Gerenciamento de Clientes</h2>
 
-            
-            {editingClient && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <ClientForm 
-                            clientData={editingClient} 
-                            onClientUpdated={handleClientUpdated} 
-                            onClose={() => setEditingClient(null)} 
-                        />
+                
+                {editingClient && (
+                    <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                            <ClientForm 
+                                clientData={editingClient} 
+                                onClientUpdated={handleClientUpdated} 
+                                onClose={() => setEditingClient(null)} 
+                            />
+                        </div>
                     </div>
+                )}
+                
+                
+                <div className={styles.actionHeader}>
+                    <button
+                        onClick={() => setShowForm(!showForm)}
+                        className={styles.newClientButton}
+                    >
+                        {showForm ? 'Cancelar Cadastro' : 'Novo Cliente +'}
+                    </button>
                 </div>
-            )}
-            
-            
-            <div className={styles.actionHeader}>
-                <button
-                    onClick={() => setShowForm(!showForm)}
-                    className={styles.newClientButton}
-                >
-                    {showForm ? 'Cancelar Cadastro' : 'Novo Cliente +'}
-                </button>
-            </div>
 
-            
-            {showForm && (
-                <div className={styles.formContainer}>
-                    <ClientForm onClientCreated={handleClientCreated} />
-                </div>
-            )}
-            
-            
-            <div className={styles.tableWrapper}>
-                <table className={styles.clientTable}>
-                    <thead className={styles.tableHead}>
-                        <tr>
-                            <th className={styles.th}>Nome</th>
-                            <th className={styles.th}>Contato</th>
-                            <th className={styles.th}>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody className={styles.tableBody}>
-                        {clients.map((client) => (
-                            <tr key={client.id}>
-                                <td className={styles.tdName}>{client.nome}</td>
-                                <td className={styles.td}>{client.contato}</td>
-                                <td className={styles.tdActions}>
-                                    <button
-                                        onClick={() => setEditingClient(client)}
-                                        className={styles.editButton}
-                                    >
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(client.id, client.nome)}
-                                        className={styles.deleteButton}
-                                    >
-                                        Deletar
-                                    </button>
-                                </td>
+                
+                {showForm && (
+                    <div className={styles.formContainer}>
+                        <ClientForm onClientCreated={handleClientCreated} />
+                    </div>
+                )}
+                
+                
+                <div className={styles.tableWrapper}>
+                    <table className={styles.clientTable}>
+                        <thead className={styles.tableHead}>
+                            <tr>
+                                <th className={styles.th}>Nome</th>
+                                <th className={styles.th}>Contato</th>
+                                <th className={styles.th}>Ações</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className={styles.tableBody}>
+                            {clients.map((client) => (
+                                <tr key={client.id}>
+                                    <td className={styles.tdName}>{client.nome}</td>
+                                    <td className={styles.td}>{client.contato}</td>
+                                    <td className={styles.tdActions}>
+                                        <button
+                                            onClick={() => setEditingClient(client)}
+                                            className={styles.editButton}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(client.id, client.nome)}
+                                            className={styles.deleteButton}
+                                        >
+                                            Deletar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
-        </div>
+        </div>    
     );
 };
 
